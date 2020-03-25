@@ -37,7 +37,9 @@ public class ScanRequestActivity extends AppCompatActivity {
         findViewById(R.id.btn_recognize_type).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setRecognizeType();
+                // 10.1.60.6 起支持
+                // 10.1.68.2 起支持，当前为 10.1.68.1，发布后更新
+//                setRecognizeType();
             }
         });
         findViewById(R.id.btn_title).setOnClickListener(new View.OnClickListener() {
@@ -112,39 +114,39 @@ public class ScanRequestActivity extends AppCompatActivity {
         });
     }
 
-    private void setRecognizeType() {
-        String[] types = {
-                "二维码",
-                "条形码",
-                "DM码",
-                "PDF417码"
-        };
-        DialogUtil.multiply(this, "选择识别类型", types, new DialogUtil.MultiplyCallback() {
-            @Override
-            public void onConfirm(boolean[] isChecked) {
-                List<ScanRequest.RecognizeType> recognizeTypes = new ArrayList<>();
-                for (int i = 0; i < isChecked.length; i++) {
-                    if (isChecked[i]) {
-                        switch (i) {
-                            case 0:
-                                recognizeTypes.add(ScanRequest.RecognizeType.QR_CODE);
-                                break;
-                            case 1:
-                                recognizeTypes.add(ScanRequest.RecognizeType.BAR_CODE);
-                                break;
-                            case 2:
-                                recognizeTypes.add(ScanRequest.RecognizeType.DM_CODE);
-                                break;
-                            case 3:
-                                recognizeTypes.add(ScanRequest.RecognizeType.PDF417_Code);
-                                break;
-                        }
-                    }
-                }
-                scanRequest.setRecognizeType(recognizeTypes.toArray(new ScanRequest.RecognizeType[0]));
-            }
-        });
-    }
+//    private void setRecognizeType() {
+//        String[] types = {
+//                "二维码",
+//                "条形码",
+//                "DM码",
+//                "PDF417码"
+//        };
+//        DialogUtil.multiply(this, "选择识别类型", types, new DialogUtil.MultiplyCallback() {
+//            @Override
+//            public void onConfirm(boolean[] isChecked) {
+//                List<ScanRequest.RecognizeType> recognizeTypes = new ArrayList<>();
+//                for (int i = 0; i < isChecked.length; i++) {
+//                    if (isChecked[i]) {
+//                        switch (i) {
+//                            case 0:
+//                                recognizeTypes.add(ScanRequest.RecognizeType.QR_CODE);
+//                                break;
+//                            case 1:
+//                                recognizeTypes.add(ScanRequest.RecognizeType.BAR_CODE);
+//                                break;
+//                            case 2:
+//                                recognizeTypes.add(ScanRequest.RecognizeType.DM_CODE);
+//                                break;
+//                            case 3:
+//                                recognizeTypes.add(ScanRequest.RecognizeType.PDF417_Code);
+//                                break;
+//                        }
+//                    }
+//                }
+//                scanRequest.setRecognizeType(recognizeTypes.toArray(new ScanRequest.RecognizeType[0]));
+//            }
+//        });
+//    }
 
     private void setTitle() {
         DialogUtil.prompt(this, new DialogUtil.PromptCallback() {

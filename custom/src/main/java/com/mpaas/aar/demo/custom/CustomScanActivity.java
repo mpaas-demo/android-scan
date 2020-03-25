@@ -330,10 +330,10 @@ public class CustomScanActivity extends Activity {
             }
         }
 
-        @Override
-        public void onSurfaceUpdated() {
-
-        }
+//        @Override
+//        public void onSurfaceUpdated() {
+//
+//        }
 
         @Override
         public void onPreviewFrameShow() {
