@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">scan_Demo</string>
+    <string name="scan_title">扫一扫</string>
+    <string name="standard_ui_btn">使用标准UI</string>
+    <string name="custom_ui_btn">使用自定义UI</string>
+    <string name="scan_failure">扫码失败，请重试！</string>
+    <string name="standard_title">标准UI</string>
+    <string name="confirm">确认</string>
+</resources>

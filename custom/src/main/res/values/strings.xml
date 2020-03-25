@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scan_tip">放入框内，自动扫描</string>
+    <string name="camera_open_error">无法开启摄像头，请检查应用是否有访问摄像头的权限，或重启设备后重试</string>
+    <string name="camera_no_permission">摄像头权限被关闭，请开启权限后重试</string>
+    <string name="custom_title">自定义UI</string>
+</resources>

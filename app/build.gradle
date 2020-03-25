@@ -1,0 +1,63 @@
+// inside 方式
+if (mPaasBuildType == 'inside') {
+    // inside 方式通过下面两个 plugin 和 mpaas_packages.json 管理依赖，并打包配置
+    apply plugin: 'com.alipay.portal'
+    apply plugin: 'com.alipay.apollo.baseline.update'
+    portal {
+        mergeAssets true
+    }
+}
+// aar 方式
+if (mPaasBuildType == 'aar') {
+    apply plugin: 'com.android.application'
+    // aar 方式通过下面 plugin 打包配置
+    apply plugin: 'com.alipay.apollo.baseline.config'
+}
+
+android {
+    compileSdkVersion 26
+    signingConfigs {
+        release {
+            keyAlias 'mpaas123'
+            keyPassword 'mpaas123'
+            storeFile file('mpaas_keystore.jks')
+            storePassword 'mpaas123'
+        }
+        debug {
+            keyAlias 'mpaas123'
+            keyPassword 'mpaas123'
+            storeFile file('mpaas_keystore.jks')
+            storePassword 'mpaas123'
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.mpaas.aar.demo.scan"
+        minSdkVersion 18
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        ndk {
+            abiFilters "armeabi"
+        }
+    }
+    buildTypes {
+        debug { signingConfig signingConfigs.debug }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'mpProguard.cfg'
+            signingConfig signingConfigs.release
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation project(':custom')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+
+    annotationProcessor "com.mpaas.mobile:metainfo-compiler:1.3.0"
+}
