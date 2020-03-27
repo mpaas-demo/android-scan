@@ -2,21 +2,21 @@
 	"base_line":"10.1.68",
 	"bundles":[
 		{
-			"bundleGav":"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200228192432@jar",
+			"bundleGav":"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200313210912@jar",
 			"bundleName":"android-phone-scancode-bqcscanservice",
 			"classifier":[
+				"api",
 				"kernel",
-				"AndroidManifest",
-				"api"
+				"AndroidManifest"
 			],
 			"dependBundles":[
 				{
-					"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
+					"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
 					"bundleName":"android-phone-mobilesdk-logging",
 					"intersection":5
 				},
 				{
-					"bundleGav":"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200228154117@jar",
+					"bundleGav":"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200323184446@jar",
 					"bundleName":"android-phone-mobilesdk-framework",
 					"intersection":1
 				},
@@ -32,85 +32,85 @@
 				"android-phone-thirdparty-androidsupport"
 			],
 			"dependsGav":[
-				"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
-				"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200228154117@jar",
+				"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
+				"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200323184446@jar",
 				"com.alipay.android.phone.thirdparty:androidsupport-build:13.23.2.190624145529@jar"
 			],
 			"remove":false
 		},
 		{
-			"bundleGav":"com.alipay.android.phone.scancode:mascanengine-build:2.0.0.200228192432@jar",
+			"bundleGav":"com.alipay.android.phone.scancode:mascanengine-build:2.0.0.200313210912@jar",
 			"bundleName":"android-phone-scancode-mascanengine",
 			"classifier":[
 				"api"
 			],
 			"dependBundles":[
 				{
-					"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
+					"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
 					"bundleName":"android-phone-mobilesdk-logging",
 					"intersection":7
 				},
 				{
-					"bundleGav":"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200228192432@jar",
-					"bundleName":"android-phone-scancode-bqcscanservice",
-					"intersection":5
-				},
-				{
-					"bundleGav":"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200228154117@jar",
+					"bundleGav":"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200323184446@jar",
 					"bundleName":"android-phone-mobilesdk-framework",
 					"intersection":1
+				},
+				{
+					"bundleGav":"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200313210912@jar",
+					"bundleName":"android-phone-scancode-bqcscanservice",
+					"intersection":5
 				}
 			],
 			"depends":[
 				"android-phone-mobilesdk-logging",
-				"android-phone-scancode-bqcscanservice",
-				"android-phone-mobilesdk-framework"
+				"android-phone-mobilesdk-framework",
+				"android-phone-scancode-bqcscanservice"
 			],
 			"dependsGav":[
-				"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
-				"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200228192432@jar",
-				"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200228154117@jar"
+				"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
+				"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200323184446@jar",
+				"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200313210912@jar"
 			],
 			"remove":false
 		},
 		{
-			"bundleGav":"com.alipay.android.phone.wallet:scanexport-build:1.3.3.200228192432@jar",
+			"bundleGav":"com.alipay.android.phone.wallet:scanexport-build:1.3.3.200316105050@jar",
 			"bundleName":"android-phone-wallet-scanexport",
 			"classifier":[
+				"AndroidManifest",
 				"api",
-				"ui",
-				"AndroidManifest"
+				"ui"
 			],
 			"dependBundles":[
 				{
-					"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
+					"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
 					"bundleName":"android-phone-mobilesdk-logging",
 					"intersection":4
+				},
+				{
+					"bundleGav":"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200323184446@jar",
+					"bundleName":"android-phone-mobilesdk-framework",
+					"intersection":6
+				},
+				{
+					"bundleGav":"com.alipay.android.phone.wallet:beephoto-build:1.0.0.200319181707@jar",
+					"bundleName":"android-phone-wallet-beephoto",
+					"intersection":3
+				},
+				{
+					"bundleGav":"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200313210912@jar",
+					"bundleName":"android-phone-scancode-bqcscanservice",
+					"intersection":11
+				},
+				{
+					"bundleGav":"com.alipay.android.phone.scancode:mascanengine-build:2.0.0.200313210912@jar",
+					"bundleName":"android-phone-scancode-mascanengine",
+					"intersection":8
 				},
 				{
 					"bundleGav":"com.alipay.android.phone.mobilecommon:multimedia-build:1.19.0.200228192536@jar",
 					"bundleName":"android-phone-mobilecommon-multimedia",
 					"intersection":1
-				},
-				{
-					"bundleGav":"com.alipay.android.phone.scancode:mascanengine-build:2.0.0.200228192432@jar",
-					"bundleName":"android-phone-scancode-mascanengine",
-					"intersection":8
-				},
-				{
-					"bundleGav":"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200228192432@jar",
-					"bundleName":"android-phone-scancode-bqcscanservice",
-					"intersection":10
-				},
-				{
-					"bundleGav":"com.alipay.android.phone.wallet:beephoto-build:1.0.0.200228192325@jar",
-					"bundleName":"android-phone-wallet-beephoto",
-					"intersection":3
-				},
-				{
-					"bundleGav":"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200228154117@jar",
-					"bundleName":"android-phone-mobilesdk-framework",
-					"intersection":6
 				},
 				{
 					"bundleGav":"com.alipay.android.phone.thirdparty:androidsupport-build:13.23.2.190624145529@jar",
@@ -120,32 +120,32 @@
 			],
 			"depends":[
 				"android-phone-mobilesdk-logging",
-				"android-phone-mobilecommon-multimedia",
-				"android-phone-scancode-mascanengine",
-				"android-phone-scancode-bqcscanservice",
-				"android-phone-wallet-beephoto",
 				"android-phone-mobilesdk-framework",
+				"android-phone-wallet-beephoto",
+				"android-phone-scancode-bqcscanservice",
+				"android-phone-scancode-mascanengine",
+				"android-phone-mobilecommon-multimedia",
 				"android-phone-thirdparty-androidsupport"
 			],
 			"dependsGav":[
-				"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
+				"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
+				"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200323184446@jar",
+				"com.alipay.android.phone.wallet:beephoto-build:1.0.0.200319181707@jar",
+				"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200313210912@jar",
+				"com.alipay.android.phone.scancode:mascanengine-build:2.0.0.200313210912@jar",
 				"com.alipay.android.phone.mobilecommon:multimedia-build:1.19.0.200228192536@jar",
-				"com.alipay.android.phone.scancode:mascanengine-build:2.0.0.200228192432@jar",
-				"com.alipay.android.phone.scancode:bqcscanservice-build:2.0.0.200228192432@jar",
-				"com.alipay.android.phone.wallet:beephoto-build:1.0.0.200228192325@jar",
-				"com.alipay.android.phone.mobilesdk:framework-build:2.6.2.200228154117@jar",
 				"com.alipay.android.phone.thirdparty:androidsupport-build:13.23.2.190624145529@jar"
 			],
 			"remove":false
 		},
 		{
-			"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200306130708@jar",
+			"bundleGav":"com.alipay.android.phone.mobilesdk:logging-build:2.1.0.200324191304@jar",
 			"bundleName":"android-phone-mobilesdk-logging",
 			"classifier":[
-				"tianyan",
 				"util",
+				"AndroidManifest",
 				"api",
-				"AndroidManifest"
+				"tianyan"
 			],
 			"dependBundles":[
 				{
@@ -216,6 +216,6 @@
 		}
 	],
 	"cp_change_id":"cp_dailyRelease_19565",
-	"update_time":"1583736033",
-	"version_code":1
+	"update_time":"1585278041",
+	"version_code":2
 }
