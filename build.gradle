@@ -16,11 +16,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath 'com.android.boost.easyconfig:easyconfig:2.3.7'
-        // inside 模式下才需要加入
         if (mPaasBuildType == 'inside') {
+            classpath 'com.android.tools.build:gradle:3.5.2'
+            // inside 模式下才需要加入
             classpath 'com.alipay.android:android-gradle-plugin:3.5.2'
+        } else {
+            classpath 'com.android.tools.build:gradle:3.6.2'
         }
     }
 }
