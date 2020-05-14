@@ -6,6 +6,11 @@ if (mPaasBuildType == 'inside') {
     portal {
         mergeAssets true
     }
+    mpaascomponents {
+        excludeDependencies = [
+                "com.alipay.android.phone.thirdparty:androidsupport-build"
+        ]
+    }
 }
 // aar 方式
 if (mPaasBuildType == 'aar') {

@@ -8,7 +8,8 @@ import android.widget.Toast;
 
 import com.alipay.android.phone.scancode.export.ScanCallback;
 import com.alipay.android.phone.scancode.export.ScanRequest;
-import com.alipay.android.phone.scancode.export.adapter.MPScan;
+import com.alipay.android.phone.scancode.export.ScanService;
+import com.alipay.mobile.framework.LauncherApplicationAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,9 @@ public class ScanRequestActivity extends AppCompatActivity {
     }
 
     private void scanWithStandardUI() {
-        MPScan.startMPaasScanActivity(this, scanRequest, new ScanCallback() {
+        ScanService scanService = LauncherApplicationAgent.getInstance()
+                .getMicroApplicationContext().findServiceByInterface(ScanService.class.getName());
+        scanService.scan(this, scanRequest, new ScanCallback() {
             @Override
             public void onScanResult(final boolean isProcessed, final Intent result) {
                 if (!isProcessed) {
