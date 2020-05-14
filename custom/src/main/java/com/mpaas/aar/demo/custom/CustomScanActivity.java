@@ -20,21 +20,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.alipay.mobile.bqcscanservice.BQCScanCallback;
-import com.alipay.mobile.bqcscanservice.BQCScanEngine;
-import com.alipay.mobile.bqcscanservice.BQCScanError;
-import com.alipay.mobile.bqcscanservice.CameraHandler;
-import com.alipay.mobile.bqcscanservice.MPaasScanService;
-import com.alipay.mobile.bqcscanservice.impl.AlipayBqcLogger;
-import com.alipay.mobile.bqcscanservice.impl.MPaasScanServiceImpl;
+import com.alipay.android.phone.scancode.export.adapter.MPRecognizeType;
+import com.alipay.android.phone.scancode.export.adapter.MPScanError;
+import com.alipay.android.phone.scancode.export.adapter.MPScanResult;
+import com.alipay.android.phone.scancode.export.adapter.MPScanner;
+import com.alipay.android.phone.scancode.export.listener.MPImageGrayListener;
+import com.alipay.android.phone.scancode.export.listener.MPScanListener;
 import com.alipay.mobile.common.logging.api.LoggerFactory;
-import com.alipay.mobile.mascanengine.MaPictureEngineService;
-import com.alipay.mobile.mascanengine.MaScanCallback;
-import com.alipay.mobile.mascanengine.MaScanResult;
-import com.alipay.mobile.mascanengine.MultiMaScanResult;
-import com.alipay.mobile.mascanengine.impl.MaPictureEngineServiceImpl;
-import com.alipay.mobile.scansdk.camera.ScanHandler;
-import com.alipay.mobile.scansdk.camera.ScanType;
 import com.mpaas.aar.demo.custom.widget.APTextureView;
 import com.mpaas.aar.demo.custom.widget.ScanView;
 
@@ -45,19 +37,17 @@ public class CustomScanActivity extends Activity {
     private static final int REQUEST_CODE_PHOTO = 2;
 
     private ImageView mTorchBtn;
-    private APTextureView mSurfaceView;
+    private APTextureView mTextureView;
     private ScanView mScanView;
-    private MPaasScanService mPaasScanService;
 
     private boolean isFirstStart = true;
     private boolean isPermissionGranted;
     private boolean isScanning;
     private boolean isPaused;
 
-    private CameraHandler cameraHandler;
-    private ScanHandler scanHandler;
     private Rect scanRect;
-    private long postcode = -1;
+
+    private MPScanner mpScanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,15 +61,15 @@ public class CustomScanActivity extends Activity {
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        mSurfaceView = (APTextureView) findViewById(R.id.surface_view);
-        mScanView = (ScanView) findViewById(R.id.scan_view);
+        mTextureView = findViewById(R.id.surface_view);
+        mScanView = findViewById(R.id.scan_view);
         findViewById(R.id.gallery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickImageFromGallery();
             }
         });
-        mTorchBtn = (ImageView) findViewById(R.id.torch);
+        mTorchBtn = findViewById(R.id.torch);
         mTorchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,11 +82,71 @@ public class CustomScanActivity extends Activity {
                 onBackPressed();
             }
         });
-
-        initScanService();
-        initScanHandler();
-        cameraHandler = mPaasScanService.getCameraHandler();
+        initMPScanner();
         checkCameraPermission();
+    }
+
+    private void initMPScanner() {
+        mpScanner = new MPScanner(this);
+        mpScanner.setRecognizeType(
+                MPRecognizeType.QR_CODE,
+                MPRecognizeType.BAR_CODE,
+                MPRecognizeType.DM_CODE,
+                MPRecognizeType.PDF417_CODE
+        );
+        mpScanner.setMPScanListener(new MPScanListener() {
+            @Override
+            public void onConfiguration() {
+                mpScanner.setDisplayView(mTextureView);
+            }
+
+            @Override
+            public void onStart() {
+                if (!isPaused) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isFinishing()) {
+                                initScanRect();
+                                mScanView.onStartScan();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onSuccess(MPScanResult mpScanResult) {
+                mpScanner.beep();
+                onScanSuccess(mpScanResult);
+            }
+
+            @Override
+            public void onError(MPScanError mpScanError) {
+                if (!isPaused) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.toast(CustomScanActivity.this, getString(R.string.camera_open_error));
+                        }
+                    });
+                }
+            }
+        });
+        mpScanner.setMPImageGrayListener(new MPImageGrayListener() {
+            @Override
+            public void onGetImageGray(int gray) {
+                // 注意：该回调在昏暗环境下可能会连续多次执行
+                if (gray < MPImageGrayListener.LOW_IMAGE_GRAY) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Utils.toast(CustomScanActivity.this, "光线太暗，请打开手电筒");
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void pickImageFromGallery() {
@@ -106,40 +156,8 @@ public class CustomScanActivity extends Activity {
     }
 
     private void switchTorch() {
-        if (mPaasScanService != null) {
-            boolean torchOn = mPaasScanService.isTorchOn();
-            mPaasScanService.setTorch(!torchOn);
-            mTorchBtn.setSelected(!torchOn);
-        }
-    }
-
-    private void initScanService() {
-        mPaasScanService = new MPaasScanServiceImpl();
-        mPaasScanService.serviceInit(null);
-        mPaasScanService.setTraceLogger(new AlipayBqcLogger());
-        mPaasScanService.setEngineParameters(null);
-    }
-
-    private void initScanHandler() {
-        scanHandler = new ScanHandler();
-        scanHandler.setMPaasScanService(mPaasScanService);
-        scanHandler.setContext(this, new ScanHandler.ScanResultCallbackProducer() {
-            @Override
-            public BQCScanEngine.EngineCallback makeScanResultCallback(ScanType type) {
-                BQCScanEngine.EngineCallback maCallback = null;
-                if (type == ScanType.SCAN_MA) {
-                    maCallback = new MaScanCallback() {
-                        @Override
-                        public void onResultMa(final MultiMaScanResult multiMaScanResult) {
-                            mPaasScanService.setScanEnable(false);
-                            scanHandler.shootSound();
-                            onScanSuccess(multiMaScanResult.maScanResults[0]);
-                        }
-                    };
-                }
-                return maCallback;
-            }
-        });
+        boolean torchOn = mpScanner.switchTorch();
+        mTorchBtn.setSelected(torchOn);
     }
 
     @Override
@@ -163,10 +181,7 @@ public class CustomScanActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (scanHandler != null) {
-            scanHandler.removeContext();
-            scanHandler.destroy();
-        }
+        mpScanner.release();
     }
 
     private void checkCameraPermission() {
@@ -210,16 +225,15 @@ public class CustomScanActivity extends Activity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    MaPictureEngineService service = new MaPictureEngineServiceImpl();
-                    final MaScanResult result = service.process(bitmap);
-                    scanHandler.shootSound();
-                    onScanSuccess(result);
+                    MPScanResult mpScanResult = mpScanner.scanFromBitmap(bitmap);
+                    mpScanner.beep();
+                    onScanSuccess(mpScanResult);
                 }
             }, "scanFromUri").start();
         }
     }
 
-    private void onScanSuccess(final MaScanResult result) {
+    private void onScanSuccess(final MPScanResult result) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -227,7 +241,7 @@ public class CustomScanActivity extends Activity {
                     notifyScanResult(true, null);
                 } else {
                     Intent intent = new Intent();
-                    intent.setData(Uri.parse(result.text));
+                    intent.setData(Uri.parse(result.getText()));
                     notifyScanResult(true, intent);
                 }
                 CustomScanActivity.this.finish();
@@ -237,9 +251,8 @@ public class CustomScanActivity extends Activity {
 
     private void startScan() {
         try {
+            mpScanner.openCameraAndStartScan();
             isScanning = true;
-            cameraHandler.init(this, bqcScanCallback);
-            cameraHandler.openCamera();
         } catch (Exception e) {
             isScanning = false;
             LoggerFactory.getTraceLogger().error(TAG, "startScan: Exception " + e.getMessage());
@@ -247,10 +260,8 @@ public class CustomScanActivity extends Activity {
     }
 
     private void stopScan() {
+        mpScanner.closeCameraAndStopScan();
         mScanView.onStopScan();
-        cameraHandler.closeCamera();
-        scanHandler.disableScan();
-        cameraHandler.release(postcode);
         isScanning = false;
         if (isFirstStart) {
             isFirstStart = false;
@@ -260,7 +271,7 @@ public class CustomScanActivity extends Activity {
     private void initScanRect() {
         if (scanRect == null) {
             scanRect = mScanView.getScanRect(
-                    mPaasScanService.getCamera(), mSurfaceView.getWidth(), mSurfaceView.getHeight());
+                    mpScanner.getCamera(), mTextureView.getWidth(), mTextureView.getHeight());
 
             float cropWidth = mScanView.getCropWidth();
             LoggerFactory.getTraceLogger().debug(TAG, "cropWidth: " + cropWidth);
@@ -279,10 +290,10 @@ public class CustomScanActivity extends Activity {
                 LoggerFactory.getTraceLogger().debug(TAG, "previewScale: " + previewScale);
                 Matrix transform = new Matrix();
                 transform.setScale(previewScale, previewScale, screenWith / 2, screenHeight / 2);
-                mSurfaceView.setTransform(transform);
+                mTextureView.setTransform(transform);
             }
         }
-        mPaasScanService.setScanRegion(scanRect);
+        mpScanner.setScanRegion(scanRect);
     }
 
     private void notifyScanResult(boolean isProcessed, Intent resultData) {
@@ -305,115 +316,4 @@ public class CustomScanActivity extends Activity {
             scanFromUri(data.getData());
         }
     }
-
-    private BQCScanCallback bqcScanCallback = new BQCScanCallback() {
-        @Override
-        public void onParametersSetted(final long pcode) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    postcode = pcode;
-                    mPaasScanService.setDisplay(mSurfaceView);
-                    cameraHandler.onSurfaceViewAvailable();
-                    scanHandler.registerAllEngine(false);
-                    scanHandler.setScanType(ScanType.SCAN_MA);
-                    scanHandler.enableScan();
-                    mScanView.onStartScan();
-                }
-            });
-        }
-
-        @Override
-        public void onSurfaceAvaliable() {
-            if (!isPaused && mPaasScanService != null) {
-                cameraHandler.onSurfaceViewAvailable();
-            }
-        }
-
-        @Override
-        public void onSurfaceUpdated() {
-
-        }
-
-        @Override
-        public void onPreviewFrameShow() {
-            if (!isPaused) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isFinishing()) {
-                            initScanRect();
-                        }
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onError(final BQCScanError bqcError) {
-            if (!isPaused) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Utils.toast(CustomScanActivity.this, getString(R.string.camera_open_error));
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void onCameraOpened() {
-        }
-
-        @Override
-        public void onPreOpenCamera() {
-
-        }
-
-        @Override
-        public void onStartingPreview() {
-
-        }
-
-        @Override
-        public void onCameraAutoFocus(boolean success) {
-        }
-
-        @Override
-        public void onOuterEnvDetected(boolean shouldShow) {
-        }
-
-        @Override
-        public void onCameraReady() {
-        }
-
-        @Override
-        public void onCameraClose() {
-        }
-
-        @Override
-        public void onCameraFrameRecognized(boolean b, long l) {
-
-        }
-
-        @Override
-        public void onEngineLoadSuccess() {
-
-        }
-
-        @Override
-        public void onSetEnable() {
-
-        }
-
-        @Override
-        public void onCameraManualFocusResult(boolean b) {
-
-        }
-
-        @Override
-        public void onCameraParametersSetFailed() {
-
-        }
-    };
 }

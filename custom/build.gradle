@@ -28,11 +28,11 @@ android {
 }
 
 dependencies {
-    compileOnly 'com.android.support:support-v4:26.1.0'
+    compileOnly 'com.android.support:appcompat-v7:26.1.0'
 
     // aar 方式
     if (mPaasBuildType == 'aar') {
-        api platform('com.mpaas.android:mpaas-baseline:10.1.68-2')
+        api platform('com.mpaas.android:mpaas-baseline:10.1.68-5')
         api 'com.mpaas.android:scan'
     }
 }
