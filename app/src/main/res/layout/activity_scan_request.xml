@@ -24,6 +24,13 @@
         android:text="设置UI风格" />
 
     <Button
+        android:id="@+id/btn_translucent_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="设置透明状态栏" />
+
+    <Button
         android:id="@+id/btn_recognize_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

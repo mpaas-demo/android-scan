@@ -34,6 +34,12 @@ public class ScanRequestActivity extends AppCompatActivity {
                 setUIType();
             }
         });
+        findViewById(R.id.btn_translucent_status_bar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTranslucentStatusBar();
+            }
+        });
         findViewById(R.id.btn_recognize_type).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,6 +112,29 @@ public class ScanRequestActivity extends AppCompatActivity {
                         break;
                     case 1:
                         scanRequest.setScanType(ScanRequest.ScanType.BARCODE);
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
+     * 10.1.68.15+ 支持
+     */
+    private void setTranslucentStatusBar() {
+        String[] types = {
+                "是",
+                "否"
+        };
+        DialogUtil.radio(this, "设置透明状态栏", types, new DialogUtil.RadioCallback() {
+            @Override
+            public void onConfirm(int which) {
+                switch (which) {
+                    case 0:
+                        scanRequest.setTranslucentStatusBar(true);
+                        break;
+                    case 1:
+                        scanRequest.setTranslucentStatusBar(false);
                         break;
                 }
             }

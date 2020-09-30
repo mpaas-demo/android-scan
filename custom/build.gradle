@@ -32,7 +32,7 @@ dependencies {
 
     // aar 方式
     if (mPaasBuildType == 'aar') {
-        api platform('com.mpaas.android:mpaas-baseline:10.1.68-5')
+        api platform('com.mpaas.android:mpaas-baseline:10.1.68-15')
         api 'com.mpaas.android:scan'
     }
 }
