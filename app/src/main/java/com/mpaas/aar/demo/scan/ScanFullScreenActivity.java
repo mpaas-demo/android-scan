@@ -1,56 +1,45 @@
 package com.mpaas.aar.demo.scan;
 
-import android.content.Intent;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.alipay.android.phone.scancode.export.ScanCallback;
 import com.alipay.android.phone.scancode.export.ScanRequest;
 import com.alipay.android.phone.scancode.export.adapter.MPScan;
+import com.alipay.android.phone.scancode.export.adapter.MPScanCallbackAdapter;
+import com.alipay.android.phone.scancode.export.adapter.MPScanResult;
+import com.alipay.android.phone.scancode.export.adapter.MPScanStarter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanRequestActivity extends AppCompatActivity {
+public class ScanFullScreenActivity extends AppCompatActivity {
 
     private ScanRequest scanRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_request);
+        setContentView(R.layout.activity_scan_fullscreen);
 
         findViewById(R.id.btn_start_scan).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanWithStandardUI();
+                scanFullScreen();
             }
         });
-        findViewById(R.id.btn_ui_type).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_start_scan_continuously).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setUIType();
-            }
-        });
-        findViewById(R.id.btn_translucent_status_bar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setTranslucentStatusBar();
+                scanFullScreenContinuously();
             }
         });
         findViewById(R.id.btn_recognize_type).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setRecognizeType();
-            }
-        });
-        findViewById(R.id.btn_title).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setTitle();
             }
         });
         findViewById(R.id.btn_hint).setOnClickListener(new View.OnClickListener() {
@@ -77,72 +66,58 @@ public class ScanRequestActivity extends AppCompatActivity {
                 setHideAlbum();
             }
         });
+        findViewById(R.id.btn_multi_ma_marker).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMultiMaMarker();
+            }
+        });
+        findViewById(R.id.btn_multi_ma_tip).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMultiMaTip();
+            }
+        });
+        findViewById(R.id.btn_target_ma_color).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTargetMaColor();
+            }
+        });
 
         scanRequest = new ScanRequest();
     }
 
-    private void scanWithStandardUI() {
-        MPScan.startMPaasScanActivity(this, scanRequest, new ScanCallback() {
-            @Override
-            public void onScanResult(final boolean isProcessed, final Intent result) {
-                if (!isProcessed) {
-                    // 扫码界面点击物理返回键或左上角返回键
-                    return;
-                }
+    private void scanFullScreen() {
+        MPScan.startMPaasScanFullScreenActivity(this, scanRequest, new MPScanCallbackAdapter() {
 
-                // 注意：本回调是在子线程中执行
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result == null || result.getData() == null) {
-                            Toast.makeText(ScanRequestActivity.this, R.string.scan_failure, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        String msg = result.getData().toString();
-                        DialogUtil.alert(ScanRequestActivity.this, msg);
-                        Log.d("ScanTest", msg);
-                    }
-                });
+            @Override
+            public boolean onScanFinish(final Context context, MPScanResult mpScanResult, final MPScanStarter mpScanStarter) {
+                DialogUtil.alert((Activity) context,
+                        mpScanResult != null ? mpScanResult.getText() : "没有识别到码", new DialogUtil.AlertCallback() {
+                            @Override
+                            public void onConfirm() {
+                                ((Activity) context).finish();
+                            }
+                        }, false);
+                return true;
             }
         });
     }
 
-    private void setUIType() {
-        String[] types = {
-                "二维码",
-                "条形码"
-        };
-        DialogUtil.radio(this, "选择UI风格", types, new DialogUtil.RadioCallback() {
-            @Override
-            public void onConfirm(int which) {
-                switch (which) {
-                    case 0:
-                        scanRequest.setScanType(ScanRequest.ScanType.QRCODE);
-                        break;
-                    case 1:
-                        scanRequest.setScanType(ScanRequest.ScanType.BARCODE);
-                        break;
-                }
-            }
-        });
-    }
+    private void scanFullScreenContinuously() {
+        MPScan.startMPaasScanFullScreenActivity(this, scanRequest, new MPScanCallbackAdapter() {
 
-    private void setTranslucentStatusBar() {
-        String[] types = {
-                "是",
-                "否"
-        };
-        DialogUtil.radio(this, "设置透明状态栏", types, new DialogUtil.RadioCallback() {
             @Override
-            public void onConfirm(int which) {
-                switch (which) {
-                    case 0:
-                        scanRequest.setTranslucentStatusBar(true);
-                        break;
-                    case 1:
-                        scanRequest.setTranslucentStatusBar(false);
-                        break;
-                }
+            public boolean onScanFinish(final Context context, MPScanResult mpScanResult, final MPScanStarter mpScanStarter) {
+                DialogUtil.alert((Activity) context,
+                        mpScanResult != null ? mpScanResult.getText() : "没有识别到码", new DialogUtil.AlertCallback() {
+                            @Override
+                            public void onConfirm() {
+                                mpScanStarter.restart();
+                            }
+                        }, false);
+                return false;
             }
         });
     }
@@ -177,15 +152,6 @@ public class ScanRequestActivity extends AppCompatActivity {
                     }
                 }
                 scanRequest.setRecognizeType(recognizeTypes.toArray(new ScanRequest.RecognizeType[0]));
-            }
-        });
-    }
-
-    private void setTitle() {
-        DialogUtil.prompt(this, new DialogUtil.PromptCallback() {
-            @Override
-            public void onConfirm(String msg) {
-                scanRequest.setTitleText(msg);
             }
         });
     }
@@ -231,6 +197,55 @@ public class ScanRequestActivity extends AppCompatActivity {
                         break;
                     case 1:
                         scanRequest.setNotSupportAlbum(false);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void setMultiMaMarker() {
+        String[] images = {
+                "默认",
+                "绿箭头"
+        };
+        DialogUtil.radio(this, "设置多码标识图片", images, new DialogUtil.RadioCallback() {
+            @Override
+            public void onConfirm(int which) {
+                switch (which) {
+                    case 0:
+                        scanRequest.setMultiMaMarker(-1);
+                        break;
+                    case 1:
+                        scanRequest.setMultiMaMarker(R.drawable.green_arrow);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void setMultiMaTip() {
+        DialogUtil.prompt(this, new DialogUtil.PromptCallback() {
+            @Override
+            public void onConfirm(String msg) {
+                scanRequest.setMultiMaTipText(msg);
+            }
+        });
+    }
+
+    private void setTargetMaColor() {
+        String[] images = {
+                "默认",
+                "绿色",
+        };
+        DialogUtil.radio(this, "设置选中单码标识颜色", images, new DialogUtil.RadioCallback() {
+            @Override
+            public void onConfirm(int which) {
+                switch (which) {
+                    case 0:
+                        scanRequest.setMaTargetColor(null);
+                        break;
+                    case 1:
+                        scanRequest.setMaTargetColor("#32CD32");
                         break;
                 }
             }

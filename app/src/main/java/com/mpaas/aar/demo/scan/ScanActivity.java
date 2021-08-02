@@ -32,6 +32,13 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.standard_ui_fullscreen_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ScanActivity.this, ScanFullScreenActivity.class));
+            }
+        });
+
         findViewById(R.id.custom_ui_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

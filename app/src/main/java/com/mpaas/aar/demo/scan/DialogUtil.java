@@ -7,6 +7,10 @@ import android.widget.EditText;
 
 public class DialogUtil {
 
+    public interface AlertCallback {
+        void onConfirm();
+    }
+
     public interface PromptCallback {
         void onConfirm(String msg);
     }
@@ -20,11 +24,41 @@ public class DialogUtil {
     }
 
     public static void alert(Activity activity, String msg) {
-        new AlertDialog.Builder(activity)
-                .setMessage(msg)
-                .setPositiveButton(R.string.confirm, null)
-                .create()
-                .show();
+        alert(activity, msg, null, true);
+    }
+
+    public static void alert(Activity activity, String msg, AlertCallback callback) {
+        alert(activity, msg, callback, true);
+    }
+
+    public static void alert(Activity activity, String msg, final AlertCallback callback, boolean isAppCompat) {
+        if (isAppCompat) {
+            new AlertDialog.Builder(activity)
+                    .setMessage(msg)
+                    .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (callback != null) {
+                                callback.onConfirm();
+                            }
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            new android.app.AlertDialog.Builder(activity)
+                    .setMessage(msg)
+                    .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (callback != null) {
+                                callback.onConfirm();
+                            }
+                        }
+                    })
+                    .create()
+                    .show();
+        }
     }
 
     public static void prompt(Activity activity, final PromptCallback callback) {

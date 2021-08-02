@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12dp"
-    tools:context=".ScanRequestActivity">
+    tools:context=".ScanFullScreenActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,18 +19,11 @@
             android:text="扫一扫" />
 
         <Button
-            android:id="@+id/btn_ui_type"
+            android:id="@+id/btn_start_scan_continuously"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="设置UI风格" />
-
-        <Button
-            android:id="@+id/btn_translucent_status_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="设置透明状态栏" />
+            android:text="连续扫码" />
 
         <Button
             android:id="@+id/btn_recognize_type"
@@ -38,13 +31,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="设置识别类型" />
-
-        <Button
-            android:id="@+id/btn_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="设置标题文案" />
 
         <Button
             android:id="@+id/btn_hint"
@@ -73,5 +59,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="设置不显示相册" />
+
+        <Button
+            android:id="@+id/btn_multi_ma_marker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="设置多码标识图片" />
+
+        <Button
+            android:id="@+id/btn_multi_ma_tip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="设置多码提示文案" />
+
+        <Button
+            android:id="@+id/btn_target_ma_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="设置选中单码标识颜色" />
     </LinearLayout>
 </ScrollView>
