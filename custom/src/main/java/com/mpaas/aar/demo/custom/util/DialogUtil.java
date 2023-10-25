@@ -1,8 +1,9 @@
-package com.mpaas.aar.demo.scan;
+package com.mpaas.aar.demo.custom.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.os.Looper;
 import android.widget.EditText;
 
 public class DialogUtil {
@@ -24,41 +25,35 @@ public class DialogUtil {
     }
 
     public static void alert(Activity activity, String msg) {
-        alert(activity, msg, null, true);
+        alert(activity, msg, null);
     }
 
-    public static void alert(Activity activity, String msg, AlertCallback callback) {
-        alert(activity, msg, callback, true);
-    }
-
-    public static void alert(Activity activity, String msg, final AlertCallback callback, boolean isAppCompat) {
-        if (isAppCompat) {
-            new AlertDialog.Builder(activity)
-                    .setMessage(msg)
-                    .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (callback != null) {
-                                callback.onConfirm();
-                            }
-                        }
-                    })
-                    .create()
-                    .show();
+    public static void alert(final Activity activity, final String msg, final AlertCallback callback) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            doAlert(activity, msg, callback);
         } else {
-            new android.app.AlertDialog.Builder(activity)
-                    .setMessage(msg)
-                    .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (callback != null) {
-                                callback.onConfirm();
-                            }
-                        }
-                    })
-                    .create()
-                    .show();
+            ThreadUtil.runOnMainThread(new Runnable() {
+                @Override
+                public void run() {
+                    doAlert(activity, msg, callback);
+                }
+            });
         }
+    }
+
+    private static void doAlert(Activity activity, String msg, final AlertCallback callback) {
+        new AlertDialog.Builder(activity)
+                .setMessage(msg)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (callback != null) {
+                            callback.onConfirm();
+                        }
+                    }
+                })
+                .create()
+                .show();
     }
 
     public static void prompt(Activity activity, final PromptCallback callback) {

@@ -1,5 +1,6 @@
 package com.mpaas.aar.demo.scan;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,11 +11,12 @@ import android.widget.Toast;
 import com.alipay.android.phone.scancode.export.ScanCallback;
 import com.alipay.android.phone.scancode.export.ScanRequest;
 import com.alipay.android.phone.scancode.export.adapter.MPScan;
+import com.mpaas.aar.demo.custom.util.DialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanRequestActivity extends AppCompatActivity {
+public class ScanRequestActivity extends Activity {
 
     private ScanRequest scanRequest;
 
@@ -90,19 +92,13 @@ public class ScanRequestActivity extends AppCompatActivity {
                     return;
                 }
 
-                // 注意：本回调是在子线程中执行
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result == null || result.getData() == null) {
-                            Toast.makeText(ScanRequestActivity.this, R.string.scan_failure, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        String msg = result.getData().toString();
-                        DialogUtil.alert(ScanRequestActivity.this, msg);
-                        Log.d("ScanTest", msg);
-                    }
-                });
+                if (result == null || result.getData() == null) {
+                    Toast.makeText(ScanRequestActivity.this, R.string.scan_failure, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String msg = result.getData().toString();
+                DialogUtil.alert(ScanRequestActivity.this, msg);
+                Log.d("ScanTest", msg);
             }
         });
     }

@@ -3,7 +3,6 @@ package com.mpaas.aar.demo.scan;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.alipay.android.phone.scancode.export.ScanRequest;
@@ -11,11 +10,12 @@ import com.alipay.android.phone.scancode.export.adapter.MPScan;
 import com.alipay.android.phone.scancode.export.adapter.MPScanCallbackAdapter;
 import com.alipay.android.phone.scancode.export.adapter.MPScanResult;
 import com.alipay.android.phone.scancode.export.adapter.MPScanStarter;
+import com.mpaas.aar.demo.custom.util.DialogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScanFullScreenActivity extends AppCompatActivity {
+public class ScanFullScreenActivity extends Activity {
 
     private ScanRequest scanRequest;
 
@@ -99,7 +99,7 @@ public class ScanFullScreenActivity extends AppCompatActivity {
                             public void onConfirm() {
                                 ((Activity) context).finish();
                             }
-                        }, false);
+                        });
                 return true;
             }
         });
@@ -116,7 +116,7 @@ public class ScanFullScreenActivity extends AppCompatActivity {
                             public void onConfirm() {
                                 mpScanStarter.restart();
                             }
-                        }, false);
+                        });
                 return false;
             }
         });

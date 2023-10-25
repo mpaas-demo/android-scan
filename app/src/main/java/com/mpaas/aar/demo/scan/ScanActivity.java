@@ -8,7 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.mpaas.aar.demo.custom.ScanHelper;
+import com.alipay.android.phone.scancode.export.adapter.MPScan;
+import com.mpaas.aar.demo.custom.MyScanActivity;
 
 /**
  * Created by xingcheng on 2018/8/8.
@@ -48,20 +49,10 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     private void scanWithCustomUI() {
-        ScanHelper.getInstance().scan(this, new ScanHelper.ScanCallback() {
-            @Override
-            public void onScanResult(boolean isProcessed, Intent result) {
-                if (!isProcessed) {
-                    // 扫码界面点击物理返回键或左上角返回键
-                    return;
-                }
+        // 如果未在 Application 中调用 mPaaS 初始化方法，需要在使用自定义扫码前调一次 MPScan.init
+        MPScan.init(this);
 
-                if (result == null || result.getData() == null) {
-                    Toast.makeText(ScanActivity.this, R.string.scan_failure, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                DialogUtil.alert(ScanActivity.this, result.getData().toString());
-            }
-        });
+        Intent intent = new Intent(ScanActivity.this, MyScanActivity.class);
+        startActivity(intent);
     }
 }
