@@ -75,6 +75,8 @@ public class MyScanActivity extends MPaasToolsCaptureActivity {
             public void onConfirm() {
                 myScanView.removeAllIconViews();
                 finish();
+                // 如需连续扫码可调用
+//                restart();
             }
         });
     }
